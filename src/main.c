@@ -6,7 +6,7 @@
 /*   By: mlazzare <mlazzare@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/20 17:35:14 by mlazzare          #+#    #+#             */
-/*   Updated: 2021/07/23 17:13:23 by mlazzare         ###   ########.fr       */
+/*   Updated: 2021/07/24 13:57:15 by mlazzare         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,12 +23,12 @@ int main(int ac, char **ag, char **envp)
     //     printf("[%s]\n", envp[i++]); 
     if (ac == 5)
     {
-       f1 = open(ag[1], O_RDONLY);
-       f2 = open(ag[4], O_RDONLY);        
-       if (!f1 || !f2)
+        f1 = open(ag[1], O_RDONLY);
+        f2 = open(ag[4], O_CREAT | O_WRONLY, 0644);     
+        if (!f1 || !f2)
            return (-1);
-       pipex(f1, f2, ag, envp);
-       if (!close(f1)  || !close(f2))
+        pipex(f1, f2, ag, envp);
+        if (!close(f1)  || !close(f2))
            return (-1);
     }
     return (0);

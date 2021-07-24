@@ -6,13 +6,13 @@
 #    By: mlazzare <mlazzare@student.s19.be>         +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/07/20 17:28:02 by mlazzare          #+#    #+#              #
-#    Updated: 2021/07/23 15:47:16 by mlazzare         ###   ########.fr        #
+#    Updated: 2021/07/24 17:10:27 by mlazzare         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = pipex
 
-CC = gcc
+CC = gcc -g3
 CFLAGS = -Wall -Wextra -Werror
 #CFLAGS += -fsanitize=address
 
