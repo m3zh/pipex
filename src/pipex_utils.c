@@ -5,56 +5,48 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mlazzare <mlazzare@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/07/20 17:40:40 by mlazzare          #+#    #+#             */
-/*   Updated: 2021/07/27 13:38:29 by mlazzare         ###   ########.fr       */
+/*   Created: 2021/07/27 16:48:02 by mlazzare          #+#    #+#             */
+/*   Updated: 2021/07/27 16:55:13 by mlazzare         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/pipex.h"
 
-int	ft_strncmp(const char *s1, const char *s2, size_t n)
+static void child_process(int *pipefd, char **opts, char **envp)
 {
-	size_t	i;
-
-	i = 0;
-	while ((s1[i] || s2[i]) && i < n)
-	{
-		if (s1[i] != s2[i])
-			return (((unsigned char *)s1)[i]
-					- ((unsigned char *)s2)[i]);
-		i++;
-	}
-	return (0);
+    dup2(f1, STDIN_FILENO);
+    dup2(pipefd[1], STDOUT_FILENO);
+    close(pipefd[0]);
+    execve("/bin/ls", myag, envp);
+    perror("execve");
+    exit(EXIT_SUCCESS);
 }
 
-size_t	ft_strlen(const char *str)
+static void parent_process(int *pipefd, int status, char **opts, char **envp)
 {
-	size_t	i;
-
-	i = 0;
-	while (str[i])
-		i++;
-	return (i);
+    waitpid(-1, &status, 0);
+    dup2(f2, STDOUT_FILENO);
+    dup2(pipefd[0], STDIN_FILENO);
+    close(pipefd[1]);
+    execve("/usr/bin/wc", myag, envp);
+    perror("execve");
+    exit(EXIT_SUCCESS);
 }
 
-char	*ft_substr(const char *s, unsigned int start, size_t len)
-{
-	char			*r;
-	size_t			i;
-	unsigned int	s_len;
+int    exec_cmd(int f1, int f2, char *cmd1, char *cmd2, char **envp)
+{   
+    int     pipefd[2];
+    int     status;
+    pid_t   p1;
 
-	if (!s)
-		return (NULL);
-	i = 0;
-	s_len = (unsigned int)ft_strlen(s);
-	if (s_len < start)
-		len = 0;
-	else if (s_len < start + len)
-		len = s_len - start;
-	if (!(r = (char *)malloc(sizeof(char) * (len + 1))))
-		return (NULL);
-	while (i < len)
-		r[i++] = s[start++];
-	r[i] = '\0';
-	return (r);
+    status = 0;
+    pipe(pipefd);
+    p1 = fork();
+    if (p1 < 0)
+        return (printf("Error: %s\n", strerror(errno)));
+    if (!p1)
+        child_process(pipefd, opts, envp);
+    else
+        parent_process(pipefd, status, opts, envp);
+    return (status);
 }

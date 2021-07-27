@@ -6,7 +6,7 @@
 /*   By: mlazzare <mlazzare@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/20 17:34:21 by mlazzare          #+#    #+#             */
-/*   Updated: 2021/07/27 15:20:21 by mlazzare         ###   ########.fr       */
+/*   Updated: 2021/07/27 16:58:31 by mlazzare         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,18 @@
 # include <errno.h>
 # include <string.h>
 
+# define PATH 5
+# define START 6
+
+typedef struct s_cmd 
+{
+    char *cmd;
+    char **path;
+    char **args;
+}   t_cmd;
+
 int         pipex(int f1, int f2, char **ag, char **ep);
+int         exec_cmd(int f1, int f2, char *cmd1, char *cmd2, char **ep);
 
 /*
 * STRING UTILS

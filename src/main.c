@@ -6,7 +6,7 @@
 /*   By: mlazzare <mlazzare@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/20 17:35:14 by mlazzare          #+#    #+#             */
-/*   Updated: 2021/07/27 15:21:42 by mlazzare         ###   ########.fr       */
+/*   Updated: 2021/07/27 16:10:28 by mlazzare         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,6 @@ int main(int ac, char **ag, char **envp)
         pipex(f1, f2, ag, envp);
         if (close(f1) < 0 || close(f2) < 0)
            return (printf("Error: %s\n", strerror(errno)));
-        system("leaks pipex");
     }
     return (0);
 }
