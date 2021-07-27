@@ -6,7 +6,7 @@
 /*   By: mlazzare <mlazzare@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/20 17:40:47 by mlazzare          #+#    #+#             */
-/*   Updated: 2021/07/24 17:28:37 by mlazzare         ###   ########.fr       */
+/*   Updated: 2021/07/27 15:21:02 by mlazzare         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ if (p1 == 0)
 p2 = fork()
 if (p2 < 0)
     Error
-if (p2 == 0)
+if (p2 == 0
     child execve 2 pipex()
 else
     parent
@@ -33,87 +33,115 @@ else
 
 static  int    list_elem(char **ag, int f1, int f2, char **ep)
 {   
-    int pipea[2];
-    int pipeb[2];
+    int     pipefd[2];
     int     status;
     pid_t   p1;
     // pid_t   p2;
     char *myag[] = { "-l", NULL };
+    // char buff[100];
 
     (void)ag;
     (void)f2;
     status = 0;
-    pipe(pipea);
-    pipe(pipeb);
-    printf("%d\n", pipea[0]);
-    printf("%d\n", pipea[1]);
+    pipe(pipefd);
+    printf("%d\n", f1);
+    printf("%d\n", f2);
+    printf("%d\n", pipefd[0]);
+    printf("%d\n", pipefd[1]);
     p1 = fork();
     if (p1 < 0)
         return (p1); // add errno
     if (!p1)
     {
         printf("child\n");
-        dup2(f1, STDOUT_FILENO);
-        dup2(pipea[1], f1);
+        dup2(f1, STDIN_FILENO);
+        dup2(pipefd[1], STDOUT_FILENO);
+        close(pipefd[0]);
         close(f1);
-        close(pipea[0]);
-        close(pipea[1]);
         execve("/bin/ls", myag, ep);
         perror("execve");
-        return 0;
+        exit(EXIT_SUCCESS);
     }
     else
-    // // {
-    // //     close(pipefd[1]);
-    // //     printf("parent\n");
-    // //     dup2(f1, STDIN_FILENO);
-    // //     dup2(pipefd[0], f1);
-    // //     execve("/bin/ls", myag, ep);
-    // //     perror("execve");
-    // // }
+    {
+        printf("parent\n");
+        dup2(f2, STDOUT_FILENO);
+        dup2(pipefd[0], STDIN_FILENO);
+        close(pipefd[1]);
+        execve("/usr/bin/wc", myag, ep);
+        perror("execve");
+        exit(EXIT_SUCCESS);
+    }
     // p2 = fork();
     // if (p2 < 0)
     //     return (p2); // add errno
     // if (!p2)
-    {
-        printf("child2\n");
-        // close(pipefd[0]);
-        dup2(f2, STDIN_FILENO);
-        dup2(pipea[0], f2);
-        close(f2);
-        close(pipea[0]);
-        close(pipea[1]);
-        execve("/usr/bin/wc", myag, ep);
-        perror("execve");
-        return 0;
-    }
-    // else
     // {
     //     close(pipefd[1]);
-    //     dup2(pipefd[0], STDIN_FILENO);
-    //     execve(ag[3], ag, ep);
+    //     printf("parent\n");
+    //     dup2(f2, STDIN_FILENO);
+    //     dup2(pipefd[0], f2);
+    //     close(pipefd[0]);
+    //     close(pipefd[1]);
+    //     execve("/usr/bin/wc", myag, ep);
+    //     perror("execve");
+    //     exit(EXIT_SUCCESS);
     // }
-    close(pipea[0]);
-    close(pipea[1]);
+    close(pipefd[0]);
+    close(pipefd[1]);
     waitpid(-1, &status, 0);
     waitpid(-1, &status, 0);
+    // int size;
+    // while ((size = read(pipefd[0], buff, sizeof(buff))) > 0) {
+    //      write(pipefd[0], buff, size);
+    // }
     return (status);
 }
 
-// open("foo.txt", O_WRONLY);
-// dup2(oldfd, newfd); it closes the new fd, copies the fd table of the old fd to the new one
-// oldfd is f1 and newfd is 1 (the child ?)
-//1 is std out >
-// 0 is std in
-
-void    pipex(int f1, int f2, char **ag, char **ep)
+static void free_path(char **path)
 {
-    // char *args[100] = {"/bin/ls", "-l", "file", NULL}
+	int i;
 
-    // execve(args[0], args, NULL);
-    // pipefd[0] = f1;
-    // pipefd[1] = f2;
-    (void)f1;
+	i = 0;
+	while (path[i])
+		free(path[i++]);
+	free(path);
+}
+
+/*
+* ep = env params;
+*/
+
+static char **get_path(char **path, char **ep)
+{
+    char *env;
+    int i;
+
+    i = -1;
+    while (ep[++i])
+    {
+        if (!ft_strncmp(ep[i], "PATH=", 5))
+        {
+            env = ft_substr(ep[i], 6, ft_strlen(ep[i]));
+            if (!env)
+                return (NULL);
+            path = ft_split(env, ':');       
+            return (path);
+        }
+    }
+    return (NULL);
+}
+
+int    pipex(int f1, int f2, char **ag, char **ep)
+{
+    char **path;
+
+    path = NULL;
+    path = get_path(path, ep);
+    if (!path)
+        return (printf("Error: %s\n", strerror(errno)));
     if (!ft_strncmp(ag[2], "ls", 2))
-        list_elem(ag, f1, f2, ep);
+        list_elem(ag, f1, f2, path);
+    free_path(path);
+    return (1);
 }
