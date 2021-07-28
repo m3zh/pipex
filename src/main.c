@@ -6,7 +6,7 @@
 /*   By: mlazzare <mlazzare@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/20 17:35:14 by mlazzare          #+#    #+#             */
-/*   Updated: 2021/07/27 16:10:28 by mlazzare         ###   ########.fr       */
+/*   Updated: 2021/07/28 15:24:03 by mlazzare         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,10 +22,11 @@ int main(int ac, char **ag, char **envp)
         f1 = open(ag[1], O_CREAT | O_RDONLY);
         f2 = open(ag[4], O_CREAT | O_RDWR | O_TRUNC, 0644);     
         if (f1 < 0 || f2 < 0)
-           return (printf("Error: %s\n", strerror(errno)));
+           return (printf("Open file: %s\n", strerror(errno)));
         pipex(f1, f2, ag, envp);
         if (close(f1) < 0 || close(f2) < 0)
-           return (printf("Error: %s\n", strerror(errno)));
+           return (printf("Close file: %s\n", strerror(errno)));
     }
+    system("leaks pipex");
     return (0);
 }
