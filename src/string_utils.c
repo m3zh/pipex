@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.c                                            :+:      :+:    :+:   */
+/*   string_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mlazzare <mlazzare@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/20 17:40:40 by mlazzare          #+#    #+#             */
-/*   Updated: 2021/07/29 12:14:01 by mlazzare         ###   ########.fr       */
+/*   Updated: 2021/07/29 17:45:31 by mlazzare         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,8 @@ char	*ft_substr(const char *s, unsigned int start, size_t len)
 		len = 0;
 	else if (s_len < start + len)
 		len = s_len - start;
-	if (!(r = (char *)malloc(sizeof(char) * (len + 1))))
+	r = (char *)malloc(sizeof(char) * (len + 1));
+	if (!r)
 		return (NULL);
 	while (i < len)
 		r[i++] = s[start++];
@@ -88,7 +89,7 @@ char	*ft_join(char *dst, const char *src)
 	i = -1;
 	j = -1;
 	r = malloc(sizeof(char)
-		* (ft_strlen(src) + ft_strlen(dst) + 1));
+			* (ft_strlen(src) + ft_strlen(dst) + 1));
 	if (!r)
 		return (NULL);
 	while (dst[++i])

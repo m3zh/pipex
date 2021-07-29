@@ -6,7 +6,7 @@
 #    By: mlazzare <mlazzare@student.s19.be>         +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/07/20 17:28:02 by mlazzare          #+#    #+#              #
-#    Updated: 2021/07/29 12:42:32 by mlazzare         ###   ########.fr        #
+#    Updated: 2021/07/29 17:31:31 by mlazzare         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,8 +22,8 @@ SRC = \
 	./src/main.c \
 	./src/pipex.c \
 	./src/pipex_utils.c \
+	./src/string_utils.c \
 	./src/ft_splitpath.c \
-	./src/utils.c \
 
 OBJ = $(SRC:.c=.o)
 

@@ -6,15 +6,15 @@
 /*   By: mlazzare <mlazzare@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/20 17:40:47 by mlazzare          #+#    #+#             */
-/*   Updated: 2021/07/29 16:46:12 by mlazzare         ###   ########.fr       */
+/*   Updated: 2021/07/29 17:56:53 by mlazzare         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/pipex.h"
 
-static int free_arr(char **path)
+static int	free_arr(char **path)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (path[i])
@@ -23,23 +23,17 @@ static int free_arr(char **path)
 	return (0);
 }
 
-static void free_struct(t_cmd *c)
+static void	free_struct(t_cmd *c)
 {
 	free(c->cmd);
 	free_arr(c->path);
 	free_arr(c->args);
 }
 
-static void  free_all(t_cmd *c1, t_cmd *c2)
+static char	**get_path(char **ep)
 {
-	free_struct(c1);
-	free_struct(c2);
-}
-
-static char **get_path(char **ep)
-{
-	char *env;
-	int i;
+	char	*env;
+	int		i;
 
 	i = -1;
 	while (ep[++i])
@@ -48,29 +42,29 @@ static char **get_path(char **ep)
 		{
 			env = ft_substr(ep[i], START, ft_strlen(ep[i]));
 			if (!env)
-				return (NULL);    
+				return (NULL);
 			return (ft_splitpath(env, ':'));
 		}
 	}
 	return (NULL);
 }
 
-static  int get_cmd(char **ep, t_cmd *c, char *cmd)
+static int	get_cmd(char **ep, t_cmd *c, char *cmd)
 {
-	int     i;
-	char    **tmp;
+	int		i;
+	char	**tmp;
 
-	i = 0;
+	i = -1;
 	c->path = get_path(ep);
 	if (!c->path)
 		return (0);
 	tmp = ft_splitpath(cmd, ' ');
 	if (!tmp)
 		return (0);
-	c->cmd = ft_substr(tmp[i], 0, ft_strlen(tmp[i]) - 1);
+	c->cmd = ft_substr(tmp[i + 1], 0, ft_strlen(tmp[i + 1]) - 1);
 	if (!c->cmd)
 		return (free_arr(tmp));
-	while (tmp[i])
+	while (tmp[++i])
 	{
 		c->args[i] = ft_substr(tmp[i], 0, ft_strlen(tmp[i]) - 1);
 		if (!c->args[i])
@@ -78,26 +72,31 @@ static  int get_cmd(char **ep, t_cmd *c, char *cmd)
 			free_arr(c->args);
 			return (free_arr(tmp));
 		}
-		i++;
 	}
 	c->args[i] = 0;
 	free_arr(tmp);
 	return (1);
 }
 
-void    pipex(int f1, int f2, char **ag, char **envp)
+void	pipex(int f1, int f2, char **ag, char **envp)
 {
-	int     i;
-	t_cmd   *cmd1;
-	t_cmd   *cmd2;
+	int		i;
+	t_cmd	*cmd1;
+	t_cmd	*cmd2;
 
 	i = -1;
 	cmd1 = malloc(sizeof(t_cmd));
 	cmd2 = malloc(sizeof(t_cmd));
+	cmd1->f = f1;
+	cmd2->f = f2;
 	if (!get_cmd(envp, cmd1, ag[2])
 		|| !get_cmd(envp, cmd2, ag[3]))
-		return (free_all(cmd1, cmd2));
-	exec_cmd(f1, f2, cmd1, cmd2, envp);
+	{
+		free_struct(cmd1);
+		free_struct(cmd2);
+		return ;
+	}
+	exec_cmd(cmd1, cmd2, envp);
 	free_struct(cmd1);
 	free_struct(cmd2);
 }
