@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_split.c                                         :+:      :+:    :+:   */
+/*   ft_splitpath.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mlazzare <mlazzare@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/27 13:36:41 by mlazzare          #+#    #+#             */
-/*   Updated: 2021/07/28 16:41:52 by mlazzare         ###   ########.fr       */
+/*   Updated: 2021/07/29 16:33:38 by mlazzare         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,25 +56,20 @@ static char	**fill_arr(int words, const char *s, char c, char **arr)
 	int i;
 	int j;
 	int k;
-	int l;
 
 	i = 0;
 	k = 0;
-	l = 1;
 	while (k < words)
 	{
 		j = 0;
-		if (k > 0)
-			l++;
-		arr[k] = (char *)malloc(sizeof(char) * (words_len(s, c, i) + l));
+		arr[k] = (char *)malloc(sizeof(char) * (words_len(s, c, i) + 2));
         if (!arr[k])
 			return (freetab(arr));
 		while (s[i] && s[i] == c)
 			i++;
 		while (s[i] && s[i] != c)
 			arr[k][j++] = s[i++];
-		if (k > 0)
-			arr[k][j++] = '/';
+		arr[k][j++] = '/';
 		arr[k][j] = '\0';
 		k++;
 	}
@@ -82,7 +77,7 @@ static char	**fill_arr(int words, const char *s, char c, char **arr)
 	return (arr);
 }
 
-char		**ft_split(char const *s, char c)
+char		**ft_splitpath(char const *s, char c)
 {
 	char	**arr;
 	int		words;
@@ -96,3 +91,49 @@ char		**ft_split(char const *s, char c)
 	arr = fill_arr(words, s, c, arr);
 	return (arr);
 }
+
+// char		**ft_splitcmd(char const *s)
+// {
+// 	int 	i;
+// 	int 	j;
+// 	int 	k;
+// 	char	**arr;
+// 	int		words;
+
+// 	i = 0;
+// 	j = 0;
+// 	k = 0;
+// 	words = 0;
+// 	if (!s)
+// 		return (NULL);
+// 	while (s[i])
+// 	{
+// 		if (s[i] && !ft_isalpha(s[i]))
+// 			words++;
+// 		while (s[i] && !ft_isalpha(s[i]))
+// 			i++;
+// 		while (s[i] && ft_isalpha(s[i]))
+// 			i++;
+// 	}
+// 	arr = (char **)malloc(sizeof(char *) * (words + 1));
+//     if (!arr)
+// 		return (NULL);
+// 	i = 0;
+// 	while (k < words)
+// 	{
+// 		while (s[i] && ft_isalpha(s[i]))
+// 			i++;
+// 		j = 0;
+// 		arr[k] = (char *)malloc(sizeof(char) * (i + 1));
+//         if (!arr[k])
+// 			return (freetab(arr));
+// 		while (s[i] && ft_isalpha(s[i]))
+// 			arr[k][j++] = s[i++];
+// 		while (s[i] && !ft_isalpha(s[i]))
+// 			i++;
+// 		arr[k][j] = '\0';
+// 		k++;
+// 	}
+// 	arr[k] = 0;
+// 	return (arr);
+// }

@@ -1,6 +1,0 @@
-cmd usr/local/bin
-cmd /usr/bin/
-cmd /bin/
-cmd /usr/sbin/
-cmd /sbin/
-cmd /usr/local/munki/

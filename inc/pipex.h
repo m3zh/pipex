@@ -6,7 +6,7 @@
 /*   By: mlazzare <mlazzare@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/20 17:34:21 by mlazzare          #+#    #+#             */
-/*   Updated: 2021/07/28 16:35:37 by mlazzare         ###   ########.fr       */
+/*   Updated: 2021/07/29 12:09:47 by mlazzare         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ void        exec_cmd(int f1, int f2, t_cmd *cmd1, t_cmd *cmd2, char **envp);
 * STRING UTILS
 */
 
-char		**ft_split(char const *s, char c);
+char		**ft_splitpath(char const *s, char c);
 size_t      ft_strlen(const char *str);
 int	        ft_strncmp(const char *s1, const char *s2, size_t n);
 char	    *ft_substr(const char *s, unsigned int start, size_t len);

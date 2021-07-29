@@ -6,7 +6,7 @@
 /*   By: mlazzare <mlazzare@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/27 16:48:02 by mlazzare          #+#    #+#             */
-/*   Updated: 2021/07/28 16:44:15 by mlazzare         ###   ########.fr       */
+/*   Updated: 2021/07/29 16:41:53 by mlazzare         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,6 @@ static void parent_process(int f2, int *pipefd, t_cmd *c, char **envp)
         cmd = ft_join(c->path[i], c->cmd); // for tutorial say you are in a pipe if you print, it will be printed on stdout which is your file
         if (!cmd)
             return ;
-        printf("cmd %s\n", cmd);
         execve(cmd, c->args, envp);
         free(cmd);
     }  

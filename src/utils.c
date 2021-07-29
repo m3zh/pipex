@@ -6,7 +6,7 @@
 /*   By: mlazzare <mlazzare@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/20 17:40:40 by mlazzare          #+#    #+#             */
-/*   Updated: 2021/07/28 16:37:41 by mlazzare         ###   ########.fr       */
+/*   Updated: 2021/07/29 12:14:01 by mlazzare         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,7 @@ char	*ft_join(char *dst, const char *src)
 	while (dst[++i])
 		r[i] = dst[i];
 	while (src[++j])
-		r[i] = src[j];
+		r[i++] = src[j];
 	r[i] = '\0';
 	return (r);
 }
