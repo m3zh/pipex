@@ -6,7 +6,7 @@
 /*   By: mlazzare <mlazzare@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/20 17:34:21 by mlazzare          #+#    #+#             */
-/*   Updated: 2021/07/29 18:03:21 by mlazzare         ###   ########.fr       */
+/*   Updated: 2021/07/30 15:32:32 by mlazzare         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,5 +45,12 @@ int		ft_strncmp(const char *s1, const char *s2, size_t n);
 char	*ft_substr(const char *s, unsigned int start, size_t len);
 char	*ft_strdup(const char *src);
 char	*ft_join(char *dst, const char *src);
+
+/*
+* FREE
+*/
+
+int		free_arr(char **path);
+void	free_struct(t_cmd *c);
 
 #endif

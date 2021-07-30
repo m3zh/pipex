@@ -6,7 +6,7 @@
 #    By: mlazzare <mlazzare@student.s19.be>         +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/07/20 17:28:02 by mlazzare          #+#    #+#              #
-#    Updated: 2021/07/29 17:31:31 by mlazzare         ###   ########.fr        #
+#    Updated: 2021/07/30 16:01:30 by mlazzare         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,6 @@ NAME = pipex
 
 CC = gcc -g3
 CFLAGS = -Wall -Wextra -Werror
-#CFLAGS += -fsanitize=address
 
 INC = ./inc/pipex.h \
 
@@ -24,6 +23,7 @@ SRC = \
 	./src/pipex_utils.c \
 	./src/string_utils.c \
 	./src/ft_splitpath.c \
+	./src/free.c \
 
 OBJ = $(SRC:.c=.o)
 

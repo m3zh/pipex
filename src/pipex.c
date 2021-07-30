@@ -6,28 +6,38 @@
 /*   By: mlazzare <mlazzare@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/20 17:40:47 by mlazzare          #+#    #+#             */
-/*   Updated: 2021/07/29 17:56:53 by mlazzare         ###   ########.fr       */
+/*   Updated: 2021/07/30 16:05:15 by mlazzare         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/pipex.h"
 
-static int	free_arr(char **path)
+static void	free_all(t_cmd *c, t_cmd *d)
 {
-	int	i;
-
-	i = 0;
-	while (path[i])
-		free(path[i++]);
-	free(path);
-	return (0);
+	free_struct(c);
+	free_struct(d);
 }
 
-static void	free_struct(t_cmd *c)
+static int	check_cmd(t_cmd *c)
 {
-	free(c->cmd);
-	free_arr(c->path);
-	free_arr(c->args);
+	int		i;
+	int		valid;
+	char	*cmd;
+
+	i = -1;
+	valid = 0;
+	while (c->path[++i])
+	{
+		cmd = ft_join(c->path[i], c->cmd);
+		if (!cmd)
+			return (0);
+		if (access(cmd, F_OK) != -1)
+			return (1);
+	}
+	write(1, "-bash: ", 7);
+	write(1, c->cmd, ft_strlen(c->cmd));
+	write(1, ": not found\n", 12);
+	return (0);
 }
 
 static char	**get_path(char **ep)
@@ -87,13 +97,10 @@ void	pipex(int f1, int f2, char **ag, char **envp)
 	cmd2 = malloc(sizeof(t_cmd));
 	cmd1->f = f1;
 	cmd2->f = f2;
-	if (!get_cmd(envp, cmd1, ag[2])
-		|| !get_cmd(envp, cmd2, ag[3]))
-	{
-		free_struct(cmd1);
-		free_struct(cmd2);
+	if (!get_cmd(envp, cmd1, ag[2]) || !get_cmd(envp, cmd2, ag[3]))
+		return (free_all(cmd1, cmd2));
+	if (!check_cmd(cmd1) || !check_cmd(cmd2))
 		return ;
-	}
 	exec_cmd(cmd1, cmd2, envp);
 	free_struct(cmd1);
 	free_struct(cmd2);
