@@ -80,11 +80,9 @@ static int	get_cmd(char **ep, t_cmd *c, char *cmd)
 
 void	pipex(int f1, int f2, char **ag, char **envp)
 {
-	int		i;
 	t_cmd	*cmd1;
 	t_cmd	*cmd2;
 
-	i = -1;
 	cmd1 = malloc(sizeof(t_cmd));
 	cmd2 = malloc(sizeof(t_cmd));
 	cmd1->f = f1;

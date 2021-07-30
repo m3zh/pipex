@@ -40,7 +40,7 @@ void	exec_cmd(t_cmd *cmd1, t_cmd *cmd2, char **envp);
 */
 
 char	**ft_splitpath(char const *s, char c);
-size_t	t_strlen(const char *str);
+size_t	ft_strlen(const char *str);
 int		ft_strncmp(const char *s1, const char *s2, size_t n);
 char	*ft_substr(const char *s, unsigned int start, size_t len);
 char	*ft_strdup(const char *src);

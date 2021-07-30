@@ -58,10 +58,8 @@ static void	parent_process(int *pipefd, t_cmd *c, char **envp)
 void	exec_cmd(t_cmd *cmd1, t_cmd *cmd2, char **envp)
 {
 	int		pipefd[2];
-	int		i;
 	pid_t	p1;
 
-	i = -1;
 	pipe(pipefd);
 	p1 = fork();
 	if (p1 < 0)
