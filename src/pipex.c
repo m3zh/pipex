@@ -6,7 +6,7 @@
 /*   By: mlazzare <mlazzare@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/20 17:40:47 by mlazzare          #+#    #+#             */
-/*   Updated: 2021/07/30 16:05:15 by mlazzare         ###   ########.fr       */
+/*   Updated: 2021/08/01 22:04:43 by mlazzare         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,28 +16,6 @@ static void	free_all(t_cmd *c, t_cmd *d)
 {
 	free_struct(c);
 	free_struct(d);
-}
-
-static int	check_cmd(t_cmd *c)
-{
-	int		i;
-	int		valid;
-	char	*cmd;
-
-	i = -1;
-	valid = 0;
-	while (c->path[++i])
-	{
-		cmd = ft_join(c->path[i], c->cmd);
-		if (!cmd)
-			return (0);
-		if (access(cmd, F_OK) != -1)
-			return (1);
-	}
-	write(1, "-bash: ", 7);
-	write(1, c->cmd, ft_strlen(c->cmd));
-	write(1, ": not found\n", 12);
-	return (0);
 }
 
 static char	**get_path(char **ep)

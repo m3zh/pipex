@@ -6,7 +6,7 @@
 /*   By: mlazzare <mlazzare@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/20 17:40:40 by mlazzare          #+#    #+#             */
-/*   Updated: 2021/07/29 17:45:31 by mlazzare         ###   ########.fr       */
+/*   Updated: 2021/08/01 22:02:35 by mlazzare         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,22 +80,15 @@ char	*ft_strdup(const char *src)
 	return (dup);
 }
 
-char	*ft_join(char *dst, const char *src)
+int	ft_putstr(char *s)
 {
-	char	*r;
-	size_t	i;
-	size_t	j;
-
-	i = -1;
-	j = -1;
-	r = malloc(sizeof(char)
-			* (ft_strlen(src) + ft_strlen(dst) + 1));
-	if (!r)
-		return (NULL);
-	while (dst[++i])
-		r[i] = dst[i];
-	while (src[++j])
-		r[i++] = src[j];
-	r[i] = '\0';
-	return (r);
+	if (!s)
+		return (2);
+	while (*s)
+	{
+		write(2, &(*s), 1);
+		s++;
+	}
+	write(2, "\n", 1);
+	return (2);
 }
