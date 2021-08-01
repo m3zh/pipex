@@ -6,7 +6,7 @@
 /*   By: mlazzare <mlazzare@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/27 16:48:02 by mlazzare          #+#    #+#             */
-/*   Updated: 2021/08/01 22:03:33 by mlazzare         ###   ########.fr       */
+/*   Updated: 2021/08/01 22:08:21 by mlazzare         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,7 +112,11 @@ int	check_cmd(t_cmd *c)
 		if (!cmd)
 			return (0);
 		if (access(cmd, X_OK) != -1)
+		{
+			free(cmd);
 			return (1);
+		}			
+		free(cmd);
 	}
 	write(1, "-bash: ", 7);
 	write(1, c->cmd, ft_strlen(c->cmd));

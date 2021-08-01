@@ -6,7 +6,7 @@
 /*   By: mlazzare <mlazzare@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/27 13:36:41 by mlazzare          #+#    #+#             */
-/*   Updated: 2021/07/29 18:01:49 by mlazzare         ###   ########.fr       */
+/*   Updated: 2021/08/01 22:24:10 by mlazzare         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ static char	**fill_arr(int words, const char *s, char c, char **arr)
 	return (arr);
 }
 
-char	**ft_splitpath(char const *s, char c)
+char	**ft_splitpath(char *s, char c)
 {
 	char	**arr;
 	int		words;

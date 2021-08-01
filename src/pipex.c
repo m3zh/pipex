@@ -6,7 +6,7 @@
 /*   By: mlazzare <mlazzare@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/20 17:40:47 by mlazzare          #+#    #+#             */
-/*   Updated: 2021/08/01 22:04:43 by mlazzare         ###   ########.fr       */
+/*   Updated: 2021/08/01 22:37:09 by mlazzare         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ static void	free_all(t_cmd *c, t_cmd *d)
 
 static char	**get_path(char **ep)
 {
+	char	**ret;
 	char	*env;
 	int		i;
 
@@ -31,7 +32,14 @@ static char	**get_path(char **ep)
 			env = ft_substr(ep[i], START, ft_strlen(ep[i]));
 			if (!env)
 				return (NULL);
-			return (ft_splitpath(env, ':'));
+			ret = ft_splitpath(env, ':');
+			if (!ret)
+			{
+				free(env);
+				return (NULL);
+			}
+			free (env);
+			return (ret);
 		}
 	}
 	return (NULL);
@@ -68,18 +76,16 @@ static int	get_cmd(char **ep, t_cmd *c, char *cmd)
 
 void	pipex(int f1, int f2, char **ag, char **envp)
 {
-	t_cmd	*cmd1;
-	t_cmd	*cmd2;
+	t_cmd	cmd1;
+	t_cmd	cmd2;
 
-	cmd1 = malloc(sizeof(t_cmd));
-	cmd2 = malloc(sizeof(t_cmd));
-	cmd1->f = f1;
-	cmd2->f = f2;
-	if (!get_cmd(envp, cmd1, ag[2]) || !get_cmd(envp, cmd2, ag[3]))
-		return (free_all(cmd1, cmd2));
-	if (!check_cmd(cmd1) || !check_cmd(cmd2))
-		return ;
-	exec_cmd(cmd1, cmd2, envp);
-	free_struct(cmd1);
-	free_struct(cmd2);
+	cmd1.f = f1;
+	cmd2.f = f2;
+	if (!get_cmd(envp, &cmd1, ag[2]) || !get_cmd(envp, &cmd2, ag[3]))
+		return (free_all(&cmd1, &cmd2));
+	if (!check_cmd(&cmd1) || !check_cmd(&cmd2))
+		return (free_all(&cmd1, &cmd2));
+	exec_cmd(&cmd1, &cmd2, envp);
+	free_struct(&cmd1);
+	free_struct(&cmd2);
 }
