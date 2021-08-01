@@ -6,7 +6,7 @@
 /*   By: mlazzare <mlazzare@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/27 16:48:02 by mlazzare          #+#    #+#             */
-/*   Updated: 2021/08/01 22:08:21 by mlazzare         ###   ########.fr       */
+/*   Updated: 2021/08/01 22:59:57 by mlazzare         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ static char	*ft_join(char *dst, const char *src)
 	return (r);
 }
 
-static void	child_process(int *pipefd, t_cmd *c, char **envp)
+static void	child_one(int *pipefd, t_cmd *c, char **envp)
 {
 	int		i;
 	char	*cmd;
@@ -40,8 +40,9 @@ static void	child_process(int *pipefd, t_cmd *c, char **envp)
 	i = -1;
 	if (dup2(c->f, STDIN_FILENO) < 0
 		|| dup2(pipefd[1], STDOUT_FILENO) < 0)
-		return (perror("Child"));
+		return (perror("Child one"));
 	close(pipefd[0]);
+	close(pipefd[1]);
 	while (c->path[++i])
 	{
 		cmd = ft_join(c->path[i], c->cmd);
@@ -57,18 +58,16 @@ static void	child_process(int *pipefd, t_cmd *c, char **envp)
 	exit(EXIT_FAILURE);
 }
 
-static void	parent_process(int *pipefd, t_cmd *c, char **envp)
+static void	child_two(int *pipefd, t_cmd *c, char **envp)
 {
 	int		i;
-	int		status;
 	char	*cmd;
 
 	i = -1;
-	status = 0;
-	waitpid(-1, &status, 0);
 	if (dup2(c->f, STDOUT_FILENO) < 0
 		|| dup2(pipefd[0], STDIN_FILENO) < 0)
-		return (perror("Parent"));
+		return (perror("Child two"));
+	close(pipefd[0]);
 	close(pipefd[1]);
 	while (c->path[++i])
 	{
@@ -87,17 +86,27 @@ static void	parent_process(int *pipefd, t_cmd *c, char **envp)
 
 void	exec_cmd(t_cmd *cmd1, t_cmd *cmd2, char **envp)
 {
+	int		status;
 	int		pipefd[2];
 	pid_t	p1;
+	pid_t	p2;
 
+	status = 0;
 	pipe(pipefd);
 	p1 = fork();
 	if (p1 < 0)
-		return (perror("Fork"));
+		return (perror("Fork one"));
 	if (!p1)
-		child_process(pipefd, cmd1, envp);
-	else
-		parent_process(pipefd, cmd2, envp);
+		child_one(pipefd, cmd1, envp);
+	p2 = fork();
+	if (p2 < 0)
+		return (perror("Fork two"));
+	if (!p2)
+		child_two(pipefd, cmd2, envp);
+	close(pipefd[0]);
+	close(pipefd[1]);
+	waitpid(-1, &status, 0);
+	waitpid(-1, &status, 0);
 }
 
 int	check_cmd(t_cmd *c)
