@@ -6,11 +6,19 @@
 /*   By: mlazzare <mlazzare@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/20 17:40:47 by mlazzare          #+#    #+#             */
-/*   Updated: 2021/08/01 22:37:09 by mlazzare         ###   ########.fr       */
+/*   Updated: 2021/08/02 15:42:11 by mlazzare         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/pipex.h"
+
+static void	init_cmd(t_cmd *c, int f)
+{
+	c->f = f;
+	c->path = 0;
+	c->cmd = 0;
+	c->args[0] = 0;
+}
 
 static void	free_all(t_cmd *c, t_cmd *d)
 {
@@ -79,8 +87,8 @@ void	pipex(int f1, int f2, char **ag, char **envp)
 	t_cmd	cmd1;
 	t_cmd	cmd2;
 
-	cmd1.f = f1;
-	cmd2.f = f2;
+	init_cmd(&cmd1, f1);
+	init_cmd(&cmd2, f2);
 	if (!get_cmd(envp, &cmd1, ag[2]) || !get_cmd(envp, &cmd2, ag[3]))
 		return (free_all(&cmd1, &cmd2));
 	if (!check_cmd(&cmd1) || !check_cmd(&cmd2))

@@ -6,7 +6,7 @@
 /*   By: mlazzare <mlazzare@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/27 13:36:41 by mlazzare          #+#    #+#             */
-/*   Updated: 2021/08/01 22:24:10 by mlazzare         ###   ########.fr       */
+/*   Updated: 2021/08/02 15:26:09 by mlazzare         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,10 @@ static char	**freetab(char **arr)
 	int	i;
 
 	i = 0;
-	while (arr[i])
+	while (arr && arr[i])
 		free(arr[i++]);
-	free(arr);
+	if (arr)
+		free(arr);
 	return (0);
 }
 
@@ -44,9 +45,9 @@ static int	words_len(const char *s, char c, int i)
 	int	l;
 
 	l = 0;
-	while (s[i] && s[i] == c)
+	while (s && s[i] && s[i] == c)
 		i++;
-	while (s[i] && s[i++] != c)
+	while (s && s[i] && s[i++] != c)
 		l++;
 	return (l);
 }
@@ -65,9 +66,9 @@ static char	**fill_arr(int words, const char *s, char c, char **arr)
 		arr[k] = (char *)malloc(sizeof(char) * (words_len(s, c, i) + 2));
 		if (!arr[k])
 			return (freetab(arr));
-		while (s[i] && s[i] == c)
+		while (s && s[i] && s[i] == c)
 			i++;
-		while (s[i] && s[i] != c)
+		while (s && s[i] && s[i] != c)
 			arr[k][j++] = s[i++];
 		arr[k][j++] = '/';
 		arr[k][j] = '\0';
@@ -82,7 +83,7 @@ char	**ft_splitpath(char *s, char c)
 	char	**arr;
 	int		words;
 
-	if (!s)
+	if (!s || !s[0])
 		return (NULL);
 	words = word_count(s, c);
 	arr = (char **)malloc(sizeof(char *) * (words + 1));

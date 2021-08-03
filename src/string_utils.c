@@ -6,7 +6,7 @@
 /*   By: mlazzare <mlazzare@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/20 17:40:40 by mlazzare          #+#    #+#             */
-/*   Updated: 2021/08/01 22:02:35 by mlazzare         ###   ########.fr       */
+/*   Updated: 2021/08/02 16:31:26 by mlazzare         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ size_t	ft_strlen(const char *str)
 	size_t	i;
 
 	i = 0;
-	while (str[i])
+	while (str && str[i])
 		i++;
 	return (i);
 }
@@ -80,10 +80,16 @@ char	*ft_strdup(const char *src)
 	return (dup);
 }
 
-int	ft_putstr(char *s)
+int	ft_putstr(char *s, char *t)
 {
 	if (!s)
 		return (2);
+	if (t)
+	{
+		write(2, "-bash: ", 7);
+		write(2, t, ft_strlen(t));
+		write(2, ": ", 2);
+	}
 	while (*s)
 	{
 		write(2, &(*s), 1);

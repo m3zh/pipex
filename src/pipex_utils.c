@@ -6,7 +6,7 @@
 /*   By: mlazzare <mlazzare@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/27 16:48:02 by mlazzare          #+#    #+#             */
-/*   Updated: 2021/08/01 22:59:57 by mlazzare         ###   ########.fr       */
+/*   Updated: 2021/08/02 15:26:37 by mlazzare         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,6 @@ static void	child_one(int *pipefd, t_cmd *c, char **envp)
 		|| dup2(pipefd[1], STDOUT_FILENO) < 0)
 		return (perror("Child one"));
 	close(pipefd[0]);
-	close(pipefd[1]);
 	while (c->path[++i])
 	{
 		cmd = ft_join(c->path[i], c->cmd);
@@ -67,7 +66,6 @@ static void	child_two(int *pipefd, t_cmd *c, char **envp)
 	if (dup2(c->f, STDOUT_FILENO) < 0
 		|| dup2(pipefd[0], STDIN_FILENO) < 0)
 		return (perror("Child two"));
-	close(pipefd[0]);
 	close(pipefd[1]);
 	while (c->path[++i])
 	{
@@ -127,8 +125,6 @@ int	check_cmd(t_cmd *c)
 		}			
 		free(cmd);
 	}
-	write(1, "-bash: ", 7);
-	write(1, c->cmd, ft_strlen(c->cmd));
-	write(1, ": not found\n", 12);
+	error_msg(c->cmd);
 	return (0);
 }
