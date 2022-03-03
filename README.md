@@ -55,7 +55,8 @@ void    pipex(int f1, int f2)
 # pipe() takes an array of two int such as int end[2], and links them together
 # what is done in end[0] is visible to end[1], and vice versa
 # pipe() assigns an fd to each end
-# Fd are file descriptors, and since files can be read and written to, by getting an fd each, the two ends can communicate
+# Fd are file descriptors
+# since files can be read and written to, by getting an fd each, the two ends can communicate
 # end[1] will write to the its own fd, and end[0] will read end[1]’s fd and write to its own
 
 ````
@@ -75,11 +76,11 @@ void    pipex(int f1, int f2)
         parent_process(f2, cmd2);
 }
 
-# fork() splits our process in two sub-processes -> which are parallel, simultaneous, they happen at the same time
-# it returns 0 for the child process, a non-zero number for the parent process, or a -1 in case of error
+# fork() splits our process in two sub-processes -> parallel, simultaneous, happen at the same time
+# it returns 0 for the child process, a non-zero for the parent process, -1 in case of error
 ````
-Once inside the pipe, everything we do will go to one of its ends, one end will write and the other will read (small note on this, see Troubleshooting).
-end[1] is the child process, end[0] the parent process; the child writes, while the parent reads.
+Once inside the pipe, everything we do will go to one of its ends, one end will write and the other will read
+end[1] is the child process, end[0] the parent process; the child writes, the parent reads
 Since for something to be read, it must be written first, so cmd1 will be executed by the child, and cmd2 by the parent.
 
 ## FDs
@@ -150,7 +151,8 @@ Our fd tables would now look like this:
                            -----------------            *duplicated 
 ````
 
-Parent process in pseudo code code will be similar, but it needs a waitpid() at the very beginning to wait for the child to finish her process.
+Parent process in pseudo code code will be similar
+It needs a waitpid() at the very beginning to wait for the child to finish her process
 ````
 # parent_process(f2, cmd2);
 int status;
@@ -170,12 +172,13 @@ int execve(const char *path, char *const argv[], char *envp[]);
 
 # path: the path to our command
 # type `which ls` and `which wc` in your terminal
-# you'll see the exact path to the commands' binaries# argv[]: the args the command needs, for ex. `ls -la`
+# you'll see the exact path to the commands' binaries
+# argv[]: the args the command needs, for ex. `ls -la`
 # you can use your ft_split to obtain a char **
 # like this { "ls", "-la", NULL }
 # it must be null terminated
 
-# envp: the environmental variable -> retrieve it in your main (see below)
+# envp: environmental variable -> retrieved from main (see below)
 # in envp you'll see a line PATH which contains all possible paths to the commands' binaries
 
 int main(int ac, char **ag, char **envp)
@@ -192,7 +195,7 @@ int main(int ac, char **ag, char **envp)
 ````
 
 To see what is inside envp, type env in your terminal
-You’ll see a line PATH , those are all the possible paths to the command binaries
+You’ll see a line PATH, those are all the possible paths to the command binaries
 You’ll need to split: you can use : as a delimiter
 Your execve function will have to try every possible path to the cmd until it finds the good one.
 To see the path to the command ls, for ex., you can type which ls in your terminal.
