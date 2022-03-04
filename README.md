@@ -79,15 +79,15 @@ void    pipex(int f1, int f2)
 # fork() splits our process in two sub-processes -> parallel, simultaneous, happen at the same time
 # it returns 0 for the child process, a non-zero for the parent process, -1 in case of error
 ````
-Once inside the pipe, everything we do will go to one of its ends, one end will write and the other will read
-end[1] is the child process, end[0] the parent process; the child writes, the parent reads
-Since for something to be read, it must be written first, so cmd1 will be executed by the child, and cmd2 by the parent.
+Once inside the pipe, everything we do will go to one of its ends, one end will write and the other will read  
+end[1] is the child process, end[0] the parent process; the child writes, the parent reads  
+Since for something to be read, it must be written first, so cmd1 will be executed by the child, and cmd2 by the parent.  
 
 ## FDs
-pipex is run like this ./pipex infile cmd1 cmd2 outfile
-FDs 0, 1 and 2 are by default assigned to stdin, stdout and stderr
-`infile`, `outfile`, the pipe, the `stdin` and `stdout` are all FDs
-On linux, you can check your fds currently open with the command ls -la /proc/$$/fd
+pipex is run like this ./pipex infile cmd1 cmd2 outfile  
+FDs 0, 1 and 2 are by default assigned to stdin, stdout and stderr  
+`infile`, `outfile`, the pipe, the `stdin` and `stdout` are all FDs  
+On linux, you can check your fds currently open with the command ls -la /proc/$$/fd  
 
 Our fd table right now looks like this:
 ````
@@ -109,9 +109,9 @@ Our fd table right now looks like this:
 ````
 ## Swapping fds with dup2()
 
-For the child process, we want infile to be our stdin (we want it as input), and end[1] to be our stdout (we want to write to end[1] the output of cmd1)  
-In the parent process, we want end[0] to be our stdin (end[0] at this point has already read from end[1] the output of cmd1), and outfile to be our stdout (we want to write to it the output of cmd2).
-We swap fds to stdin/stdout with dup2()
+For the child process, we want infile to be our stdin (as input), and end[1] to be our stdout (we write to end[1] the output of cmd1)  
+In the parent process, we want end[0] to be our stdin (end[0] reads from end[1] the output of cmd1), and outfile to be our stdout (we write to it the output of cmd2)  
+We swap fds to stdin/stdout with dup2()  
 From the MAN, 
 ````
 int dup2(int fd1, int fd2) : it will close fd2 and duplicate the value of fd2 to fd1
@@ -151,8 +151,8 @@ Our fd tables would now look like this:
                            -----------------            *duplicated 
 ````
 
-Parent process in pseudo code code will be similar
-It needs a waitpid() at the very beginning to wait for the child to finish her process
+Parent process in pseudo code will be similar  
+It needs a waitpid() at the very beginning to wait for the child to finish her process  
 ````
 # parent_process(f2, cmd2);
 int status;
@@ -173,13 +173,16 @@ int execve(const char *path, char *const argv[], char *envp[]);
 # path: the path to our command
 # type `which ls` and `which wc` in your terminal
 # you'll see the exact path to the commands' binaries
+
 # argv[]: the args the command needs, for ex. `ls -la`
 # you can use your ft_split to obtain a char **
 # like this { "ls", "-la", NULL }
 # it must be null terminated
 
 # envp: environmental variable -> retrieved from main (see below)
-# in envp you'll see a line PATH which contains all possible paths to the commands' binaries
+# in envp the line PATH contains all possible paths to the commands' binaries
+# type env in the terminal to have a look
+# split on : to retrieve all possible PATHs 
 
 int main(int ac, char **ag, char **envp)
 {
@@ -193,13 +196,9 @@ int main(int ac, char **ag, char **envp)
      return (0);
 }
 ````
-
-To see what is inside envp, type env in your terminal
-You’ll see a line PATH, those are all the possible paths to the command binaries
-You’ll need to split: you can use : as a delimiter
-Your execve function will have to try every possible path to the cmd until it finds the good one.
-To see the path to the command ls, for ex., you can type which ls in your terminal.
-If the command does not exist, execve will do nothing and return -1; else, it will execute the cmd and delete all ongoing processes (so no leaks).
+Your execve function will have to try every possible path to the cmd until it finds the good one  
+If the command does not exist, execve will do nothing and return -1;  
+else, it will execute the cmd and delete all ongoing processes (so no leaks)  
 
 In pseudo code,
 ````
@@ -247,14 +246,14 @@ void    pipex(int f1, int f2, char *cmd1, char *cmd 2)
 ````
 ## Using access()
 
-If you run a command that does not exist, your program will do nothing and exit without error messages.
-execve() will execute nothing if the command is not found. You need to check if it exists before its execution with `access()`
+If the command that does not exist, execve() will execute nothing without error messages  
+You need to check if the command exists before its execution with `access()`, else send an error `pipex: cmdXXX: cmdXXX not found`  
 
 ## Debugging
 
-[0] As for splitting your envp path, print out the result of your split and have a look. Add a / at the end for the path to work correctly.
+[0] When splitting the env, print out the result of your split. Add a / at the end for the path to work correctly.
 
-[1] If you launch your program and it gets stuck without executing anything, you most probably have not closed the ends of your pipe correctly.
+[1] If the program gets stuck without executing anything, most probably the pipe ends are not closed correctly.
 Until one end is open, the other will be waiting for input and its process will not finish.
 
 [2] Place perror("Error") here and there in your code, especially right after fork() or execve() , to see what is going on in the pipe.
