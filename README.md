@@ -107,7 +107,7 @@ Our fd table right now looks like this:
                  6         |     end[1]    |  
                            -----------------
 ````
-## dup2() to swap fds
+## Swapping fds with dup2()
 
 For the child process, we want infile to be our stdin (we want it as input), and end[1] to be our stdout (we want to write to end[1] the output of cmd1)  
 In the parent process, we want end[0] to be our stdin (end[0] at this point has already read from end[1] the output of cmd1), and outfile to be our stdout (we want to write to it the output of cmd2).
@@ -164,7 +164,7 @@ close(f2);
 // execve function for each possible path (see below)
 exit(EXIT_FAILURE);
 ````
-## execve()
+## Executing with execve()
 
 From the MAN,
 ````
@@ -220,7 +220,7 @@ while (mypaths[++i])
 }
 return (EXIT_FAILURE);
 ````
-## pipex with two child processes
+## Creating a pipe with two child processes
 
 ````
 void    pipex(int f1, int f2, char *cmd1, char *cmd 2)
@@ -245,7 +245,7 @@ void    pipex(int f1, int f2, char *cmd1, char *cmd 2)
     waitpid(child2, &status, 0);  // while they finish their tasks
 }
 ````
-## access()
+## Using access()
 
 If you run a command that does not exist, your program will do nothing and exit without error messages.
 execve() will execute nothing if the command is not found. You need to check if it exists before its execution with `access()`
