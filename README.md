@@ -25,25 +25,6 @@ pipe()
 # fork() runs two processes (i.e. two commands) in one single program
 # dup2() swaps our files with stdin and stdout
  ````
-Visually,
-````
-// each cmd needs a stdin (input) and returns an output (to stdout)
-   
-    infile                                             outfile
-as stdin for cmd1                                 as stdout for cmd2            
-       |                        PIPE                        ↑
-       |           |---------------------------|            |
-       ↓             |                       |              |
-      cmd1   -->    end[1]       ↔       end[0]   -->     cmd2           
-                     |                       |
-            cmd1   |---------------------------|  end[0]
-           output                             reads end[1]
-         is written                          and sends cmd1
-          to end[1]                          output to cmd2
-       (end[1] becomes                      (end[0] becomes 
-        cmd1 stdout)                           cmd2 stdin)
-
-````
 ## Setting the pipe
 
 ````
@@ -111,6 +92,25 @@ Our fd table right now looks like this:
 
 For the child process, we want infile to be our stdin (as input), and end[1] to be our stdout (we write to end[1] the output of cmd1)  
 In the parent process, we want end[0] to be our stdin (end[0] reads from end[1] the output of cmd1), and outfile to be our stdout (we write to it the output of cmd2)  
+Visually,
+````
+// each cmd needs a stdin (input) and returns an output (to stdout)
+   
+    infile                                             outfile
+as stdin for cmd1                                 as stdout for cmd2            
+       |                        PIPE                        ↑
+       |           |---------------------------|            |
+       ↓             |                       |              |
+      cmd1   -->    end[1]       ↔       end[0]   -->     cmd2           
+                     |                       |
+            cmd1   |---------------------------|  end[0]
+           output                             reads end[1]
+         is written                          and sends cmd1
+          to end[1]                          output to cmd2
+       (end[1] becomes                      (end[0] becomes 
+        cmd1 stdout)                           cmd2 stdin)
+
+````
 We swap fds to stdin/stdout with dup2()  
 From the MAN, 
 ````
