@@ -33,10 +33,10 @@ void    pipex(int f1, int f2)
     int end[2];    pipe(end);
 }
 
-# pipe() takes an array of two int such as int end[2], and links them together
+# pipe() takes an array of two int, and links them together
 # what is done in end[0] is visible to end[1], and vice versa
 # pipe() assigns an fd to each end
-# Fd are file descriptors
+# Fds are file descriptors
 # since files can be read and written to, by getting an fd each, the two ends can communicate
 # end[1] will write to the its own fd, and end[0] will read end[1]’s fd and write to its own
 
@@ -57,10 +57,11 @@ void    pipex(int f1, int f2)
         parent_process(f2, cmd2);
 }
 
-# fork() splits our process in two sub-processes -> parallel, simultaneous, happen at the same time
+# fork() splits the process in two sub-processes -> parallel, simultaneous, happen at the same time
 # it returns 0 for the child process, a non-zero for the parent process, -1 in case of error
 ````
-Once inside the pipe, everything we do will go to one of its ends, one end will write and the other will read  
+Everything done inside the pipe goes go to one of its ends;  
+one end will write and the other will read  
 end[1] is the child process, end[0] the parent process; the child writes, the parent reads  
 Since for something to be read, it must be written first, so cmd1 will be executed by the child, and cmd2 by the parent.  
 
@@ -131,28 +132,8 @@ close(f1)
 // execve function for each possible path (see below)
 exit(EXIT_FAILURE);
 ````
-Our fd tables would now look like this:
-````
-
-                           -----------------
-                 0         |     infile *  |  (x stdin closed)
-                           -----------------    
-                 1         |     end[1] *  |  (x stdout closed)
-                           -----------------
-                 2         |     stderr    |  
-                           -----------------
-                 3         |     infile    |  
-                           -----------------
-                 4         |     outfile   |  
-                           -----------------
-                 5         |     end[0]    | 
-                           -----------------
-                 6         |     end[1]    |  
-                           -----------------            *duplicated 
-````
-
 Parent process in pseudo code will be similar  
-It needs a waitpid() at the very beginning to wait for the child to finish her process  
+It needs a `waitpid()` at the very beginning to wait for the child to finish her process  
 ````
 # parent_process(f2, cmd2);
 int status;
@@ -196,20 +177,23 @@ int main(int ac, char **ag, char **envp)
      return (0);
 }
 ````
-Your execve function will have to try every possible path to the cmd until it finds the good one  
-If the command does not exist, execve will do nothing and return -1;  
+`execve()` will try every possible path to the cmd until it finds the good one  
+If the command does not exist, `execve()` will do nothing and return -1;  
 else, it will execute the cmd and delete all ongoing processes (so no leaks)  
 
 In pseudo code,
 ````
-// parsing (somewhere in your code)char *PATH_from_envp;
+// parsing (somewhere in your code) char *PATH_from_envp;
 char **mypaths;
-char **mycmdargs;// retrieve the line PATH from envp
+char **mycmdargs; // retrieve the line PATH from envp
+
 PATH_from_envp = ft_substr(envp ....);
-mypaths = ft_split(PATH_from_envp, ":"); // see section 4 for a
-                                            small note[0]
-mycmdargs = ft_split(ag[2], " ");// in your child or parent processint  i;
-char *cmd;i = -1;
+mypaths = ft_split(PATH_from_envp, ":");
+mycmdargs = ft_split(ag[2], " ");// in your child or parent process
+int  i;
+char *cmd;
+
+i = -1;
 while (mypaths[++i])
 {
     cmd = ft_join(mypaths[i], ag[2]); // protect your ft_join
