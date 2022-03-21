@@ -1,10 +1,6 @@
 # PIPEX
 Pipex is a project that re-creates in C the way two commands are piped together via `|` in the shell
 
-## pipe() , fork() , dup2() and execve()
-
-This is the order in which these functions will be used:
-
 ````
 # ./pipex infile cmd1 cmd2 outfile
 pipe()
