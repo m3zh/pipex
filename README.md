@@ -56,8 +56,6 @@ void    pipex(int f1, int f2)
 # fork() splits the process in two sub-processes -> parallel, simultaneous, happen at the same time
 # it returns 0 for the child process, a non-zero for the parent process, -1 in case of error
 ````
-Everything done inside the pipe goes go to one of its ends;  
-one end will write and the other will read  
 end[1] is the child process, end[0] the parent process; the child writes, the parent reads  
 Since for something to be read, it must be written first, so cmd1 will be executed by the child, and cmd2 by the parent.  
 
@@ -116,7 +114,7 @@ else said, it will redirect fd1 to fd2
 ````
 In pseudo code:
 ````
-# child_process(f1, cmd1);// add protection if dup2() < 0
+# child_process(f1, cmd1); // add protection if dup2() < 0
 // dup2 close stdin, f1 becomes the new stdin
 dup2(f1, STDIN_FILENO); // we want f1 to be execve() input
 dup2(end[1], STDOUT_FILENO); // we want end[1] to be execve() stdout
@@ -231,7 +229,7 @@ You need to check if the command exists before its execution with `access()`, el
 
 ## Debugging
 
-[0] When splitting the env, print out the result of your split. Add a / at the end for the path to work correctly.
+[0] When splitting the env, print out the result of split. Add a / at the end for the path to work correctly.
 
 [1] If the program gets stuck without executing anything, most probably the pipe ends are not closed correctly.
 Until one end is open, the other will be waiting for input and its process will not finish.
