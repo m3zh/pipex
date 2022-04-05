@@ -225,20 +225,20 @@ void    pipex(int f1, int f2, char *cmd1, char *cmd 2)
 ## Using access()
 
 If the command that does not exist, execve() will execute nothing without error messages  
-You need to check if the command exists before its execution with `access()`, else send an error `pipex: cmdXXX: cmdXXX not found`  
+You need to check if the command exists before its execution with `access()`, else send an error `pipex: weirdcmd: weirdcmd not found`  
 
 ## Debugging
 
-[0] When splitting the env, print out the result of split. Add a / at the end for the path to work correctly.
+[0] When splitting the env, print out the result of split. Add a `/` at the end for the path to work correctly.
 
 [1] If the program gets stuck without executing anything, most probably the pipe ends are not closed correctly.
 Until one end is open, the other will be waiting for input and its process will not finish.
 
-[2] Place perror("Error") here and there in your code, especially right after fork() or execve() , to see what is going on in the pipe.
+[2] Place `perror("Error")` in your code, especially right after fork() or execve() , to see what is going on in the pipe.
 Inside the pipe, everything we do will go to one of its ends.
-If we use printf, it won’t show in the terminal or it will print to your outfile (because we swapped the stdout)
-perror("Error") will work because it prints to stderr.
+`printf` for ex. won’t print to the terminal, it will print to your outfile (because we swapped the stdout)
+`perror("Error")` will work because it prints to stderr.
 
-[3] Handle file rights when you open() them.
+[3] Handle file rights when `open()`ing them.
 Return error if the file cannot be opened, read or written. 
 Check how the shell treats infile and outfile when they do not exist, are not readable, writable etc. (chmod is your best friend).
